@@ -1,27 +1,14 @@
 import express from 'express';
 import db from '../db';
+import StudentController from '../controllers/studentController';
 
 const studentRouter = express.Router();
+const sController = new StudentController(db)
 
-studentRouter.get('/all', (req, res) => {
-    res.json([
-        {id: 1, name: 'Alex', course: 'Computing'},
-        {id: 2, name: 'Bob', course: 'Business'}
-    ]);
-});
+studentRouter.get('/id/:id', sController.findStudentById.bind(sController));
+studentRouter.get('/course/:course', sController.findStudentByCourse.bind(sController));
+studentRouter.post('/create', sController.addStudent.bind(sController))
+studentRouter.delete('/id/:id', sController.deleteStudent.bind(sController));
 
-studentRouter.get('/allstudent', (req, res) => {
-    const stmt = db.prepare('SELECT * FROM students');
-    const students = stmt.all();
-    res.json(students)
-})
-
-studentRouter.get('/id/:id', (req, res) => {
-    res.json({
-        id: req.params.id,
-        name: 'Alex',
-        course: 'Computing'
-    });
-});
 
 export default studentRouter;
